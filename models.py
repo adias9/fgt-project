@@ -1,4 +1,6 @@
-from app import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 class Vendor(db.Model):
@@ -38,7 +40,7 @@ class PurchaseAgreement(db.Model):
     purchase_orders = db.relationship(
         'PurchaseOrder',
         backref=db.backref('vendor', lazy='joined'),
-        lazy=True
+        lazy=False
     )
 
 

@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Flask, request, jsonify, make_response
 
 from os import environ
-from models import db, PurchaseAgreement, Vendor, PlantType, PurchaseOrder
+from models import db, PurchaseAgreement, Vendor, PlantType, PurchaseOrder, Plant
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
@@ -163,10 +163,15 @@ def update_purchase_order(id):
     try:
         purchase_order = PurchaseOrder.query.filter_by(id=id).first()
         if purchase_order:
-            data = request.get_json()
-            purchase_order.is_received = data['received']
-            db.session.commit()
-            return make_response(jsonify({'message': 'purchase_order updated'}), 200)
+            if not purchase_order.is_received:
+                data = request.get_json()
+                purchase_order.is_received = data['received']
+
+                new_plant = Plant(plant_type=purchase_order.plant_type)
+                db.session.add(new_plant)
+                db.session.commit()
+                return make_response(jsonify({'message': 'purchase_order updated'}), 200)
+            return make_response(jsonify({'message': 'purchase_order already received'}), 400)
         return make_response(jsonify({'message': 'purchase_order not found'}), 404)
     except Exception as err:
         return make_response(jsonify({'message': f'error updating purchase_order: {err}'}), 500)

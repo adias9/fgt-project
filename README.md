@@ -65,19 +65,19 @@ $ docker compose down
 
 ### 1. Endpoints
 
-POST /purchaseagreement
-- params: { total_quantity: int, end_date: date }
-- return purchaseagreement_id: uuid
+POST /purchase_agreement
+- params: { total_quantity: int, end_date: date, vendor_id: uuid }
+- return purchase_agreement_id: uuid
 
-POST /purchaseorder
+POST /purchase_order
 - params: { quantity: int, plant_type_id: uuid, vendor_id: uuid }
-- return purchaseorder_id: uuid
+- return purchase_order_id: uuid
 - errors:
   - if purchase order too big
 
-PUT /purchaseorder/<int:id>
-- params: { purchaseorder_id: uuid }
-- logic: update purchaseorder received & create new plants
+PUT /purchase_order/<int:id>
+- params: { purchase_order_id: uuid }
+- logic: update purchase_order received & create new plants
 - return success
 
 ### 2. Data Model
@@ -93,8 +93,8 @@ PurchaseAgreement
 - updated_at: DateTime
 - created_at: DateTime
 - vendor_id: bigint
-- purchaseorders_quantity_total: int (Denormalized)
-- is_complete: boolean (Denormalized = Date.now() > end_date OR purchaseorders_quantity_total == total_quantity)
+- purchase_orders_quantity_total: int (Denormalized)
+- is_complete: boolean (Denormalized = Date.now() > end_date OR purchase_orders_quantity_total == total_quantity)
 
 PurchaseOrder
 - id: bigint
@@ -102,7 +102,7 @@ PurchaseOrder
 - is_received: boolean
 - updated_at: DateTime
 - created_at: DateTime
-- planttype_id: int
+- plant_type_id: int
 - vendor_id: bigint
 - purchase_agreement_id: bigint (Optional) 
 
@@ -113,7 +113,7 @@ PlantType
 Plant
 - id: bigint
 - created_at: DateTime
-- planttype_id: int
+- plant_type_id: int
 
 ### 3. Assumptions for Simplicity:
 - We don't need to keep track of the specific plants on POs (Plants are plants once they reach our Inventory)

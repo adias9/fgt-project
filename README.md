@@ -13,6 +13,8 @@
    4. password: postgres
    5. database: postgres
 
+I did not have time to setup the boilerplate for automated unit tests, so I relied on manual tests of happy paths
+
 ### Python/Flask with PostgreSQL database
 
 Project structure:
@@ -164,3 +166,4 @@ Plant
 - Won't add denormalized fields on PurchaseAgreement in implementation due to complexity and time constraints
   - purchase_orders_quantity_total: int (Denormalized)
   - is_complete: boolean (Denormalized = Date.now() > end_date OR purchase_orders_quantity_total == total_quantity)
+- Did not have time to setup boilerplate for automated unit tests, so relied on manual tests of happy paths

@@ -31,7 +31,7 @@ The compose file defines an application with two services `backend` and `db`.
 When deploying the application, docker compose maps port 4000 of the proxy service container to port 4000 of the host as specified in the file.
 Make sure port 4000 on the host is not already being in use.
 
-## Deploy with docker compose
+## Running locally with docker compose
 
 ```
 $ docker compose up -d
@@ -54,7 +54,7 @@ flask_app           andreasmodsquad/flask_live_app:1.0.0   "flask run --host=0.â
 flask_db            postgres:12                            "docker-entrypoint.sâ€¦"   flask_db            3 minutes ago       Up 3 minutes        0.0.0.0:5432->5432/tcp
 ```
 
-After the application starts, navigate to `http://localhost:4000` in your web browser or run:
+After the application starts, navigate to `http://localhost:4000` in your web browser or run to see its running:
 ```
 $ curl localhost:4000
 { "message": "hello world" }

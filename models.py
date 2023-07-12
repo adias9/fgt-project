@@ -32,6 +32,11 @@ class PurchaseAgreement(db.Model):
         server_default=db.func.now(),
         server_onupdate=db.func.now()
     )
+    plant_type_id = db.Column(
+        db.Integer,
+        db.ForeignKey('plant_type.id'),
+        nullable=False
+    )
     vendor_id = db.Column(
         db.Integer,
         db.ForeignKey('vendor.id'),
@@ -78,6 +83,11 @@ class PlantType(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
+    purchase_agreements = db.relationship(
+        PurchaseAgreement,
+        backref=db.backref('plant_type', lazy='joined'),
+        lazy=True
+    )
     purchase_orders = db.relationship(
         PurchaseOrder,
         backref=db.backref('plant_type', lazy='joined'),

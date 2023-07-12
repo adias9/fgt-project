@@ -1,7 +1,8 @@
+from datetime import datetime
 from flask import Flask, request, jsonify, make_response
 
 from os import environ
-from models import db, PurchaseAgreement, Vendor, PlantType
+from models import db, PurchaseAgreement, Vendor, PlantType, PurchaseOrder
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
@@ -59,11 +60,13 @@ def create_plant_type():
 def create_purchase_agreement():
     try:
         data = request.get_json()
+        pt = db.session.query(PlantType).get(data['plant_type_id'])
         v = db.session.query(Vendor).get(data['vendor_id'])
         new_pa = PurchaseAgreement(
             total_quantity=data['total_quantity'],
             end_date=data['end_date'],
-            vendor=v
+            vendor=v,
+            plant_type=pt
         )
         db.session.add(new_pa)
         db.session.commit()
@@ -71,12 +74,87 @@ def create_purchase_agreement():
             jsonify({'message': 'purchase_agreement created'}),
             201
         )
-    except Exception:
+    except Exception as err:
         return make_response(
-            jsonify({'message': 'error creating purchase_agreement'}), 
+            jsonify({'message': f'error creating purchase_agreement: {err}'}), 
             500
         )
 
+
+@app.route('/purchase_order/agreement/<int:id>', methods=['POST'])
+def create_purchase_order_with_agreement(id):
+    try:
+        pa = PurchaseAgreement.query.filter_by(id=id).first()
+        if pa:
+            data = request.get_json()
+            new_quantity = data['quantity']
+            pos_quantity_total = sum(po.quantity for po in pa.purchase_orders)
+
+            max_allowed_quantity = pa.total_quantity - pos_quantity_total
+
+            if datetime.now() > pa.end_date:
+                return make_response(
+                    jsonify({'message': 'purchase_agreement past end_date'}),
+                    400
+                )
+
+            if new_quantity > max_allowed_quantity:
+                message = f'purchase_order quantity is too large. Max allowed is {max_allowed_quantity}'
+                
+                if max_allowed_quantity == 0:
+                    message = 'purchase_agreement filled.'
+                
+                return make_response(
+                    jsonify({'message': message}),
+                    400
+                )
+            
+            new_po = PurchaseOrder(
+                quantity=data['quantity'],
+                vendor=pa.vendor,
+                plant_type=pa.plant_type,
+                purchase_agreement=pa
+            )
+            db.session.add(new_po)
+            db.session.commit()
+            return make_response(
+                jsonify({'message': 'purchase_order created'}),
+                201
+            )
+            
+        return make_response(
+            jsonify({'message': 'purchase_agreement not found'}), 
+            404
+        )
+    except Exception as err:
+        return make_response(
+            jsonify({'message': f'error creating purchase_order: {err}'}), 
+            500
+        )
+
+
+@app.route('/purchase_order', methods=['POST'])
+def create_purchase_order():
+    try:
+        data = request.get_json()
+        pt = db.session.query(PlantType).get(data['plant_type_id'])
+        v = db.session.query(Vendor).get(data['vendor_id'])
+        new_po = PurchaseOrder(
+            quantity=data['quantity'],
+            vendor=v,
+            plant_type=pt
+        )
+        db.session.add(new_po)
+        db.session.commit()
+        return make_response(
+            jsonify({'message': 'purchase_order created'}),
+            201
+        )
+    except Exception as err:
+        return make_response(
+            jsonify({'message': f'error creating purchase_order, {err}'}), 
+            500
+        )
 
 # update a user
 # @app.route('/users/<int:id>', methods=['PUT'])

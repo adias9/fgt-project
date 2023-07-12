@@ -66,17 +66,24 @@ $ docker compose down
 ### 1. Endpoints
 
 POST /purchase_agreement
-- params: { total_quantity: int, end_date: date, vendor_id: uuid }
+- params: { total_quantity: int, end_date: date, plant_type_id: uuid, vendor_id: uuid }
 - return success
+
+POST /purchase_order/agreement/<int:id>
+- params: { quantity: int }
+- return success
+- errors:
+  - if agreement out of date
+  - if purchase order too big
+  - if agreement filled
+  - if agreement not found
 
 POST /purchase_order
 - params: { quantity: int, plant_type_id: uuid, vendor_id: uuid }
 - return success
-- errors:
-  - if purchase order too big
 
 PUT /purchase_order/<int:id>
-- params: { purchase_order_id: uuid }
+- params: N/A
 - logic: update purchase_order received & create new plants
 - return success
 
@@ -98,6 +105,7 @@ PurchaseAgreement
 - end_date: DateTime
 - updated_at: DateTime
 - created_at: DateTime
+- plant_type_id: int
 - vendor_id: bigint
 - purchase_orders_quantity_total: int (Denormalized)
 - is_complete: boolean (Denormalized = Date.now() > end_date OR purchase_orders_quantity_total == total_quantity)
@@ -127,3 +135,4 @@ Plant
 - We will seed the Vendors and PlantTypes rather than allowing creation.
 - 1(Vendor) to many (PA) relationship
 - 1(Vendor) to many (PO) relationship
+- Won't add denormalized fields in implementation

@@ -1,4 +1,4 @@
-## Flask sample application
+## FGT Purchase Order/Agreement Project 
 
 ### Python/Flask with PostgreSQL database
 
@@ -61,3 +61,63 @@ Stop and remove the containers
 $ docker compose down
 ```
 
+## Project Planning
+
+### 1. Endpoints
+
+POST /purchaseagreement
+- params: { total_quantity: int, end_date: date }
+- return purchaseagreement_id: uuid
+
+POST /purchaseorder
+- params: { quantity: int, plant_type_id: uuid, vendor_id: uuid }
+- return purchaseorder_id: uuid
+- errors:
+  - if purchase order too big
+
+PUT /purchaseorder/<int:id>
+- params: { purchaseorder_id: uuid }
+- logic: update purchaseorder received & create new plants
+- return success
+
+### 2. Data Model
+
+Vendor
+- id: bigint
+- name: String
+
+PurchaseAgreement
+- id: bigint
+- total_quantity: int
+- end_date: DateTime
+- updated_at: DateTime
+- created_at: DateTime
+- vendor_id: bigint
+- purchaseorders_quantity_total: int (Denormalized)
+- is_complete: boolean (Denormalized = Date.now() > end_date OR purchaseorders_quantity_total == total_quantity)
+
+PurchaseOrder
+- id: bigint
+- quantity: int
+- is_received: boolean
+- updated_at: DateTime
+- created_at: DateTime
+- planttype_id: int
+- vendor_id: bigint
+- purchase_agreement_id: bigint (Optional) 
+
+PlantType
+- id: int
+- name: String
+
+Plant
+- id: bigint
+- created_at: DateTime
+- planttype_id: int
+
+### 3. Assumptions for Simplicity:
+- We don't need to keep track of the specific plants on POs (Plants are plants once they reach our Inventory)
+- There is no User model and no access control. This is accessible only by admins.
+- We will seed the Vendors and PlantTypes rather than allowing creation.
+- 1(Vendor) to many (PA) relationship
+- 1(Vendor) to many (PO) relationship

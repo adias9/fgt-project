@@ -145,7 +145,7 @@ Plant
 - plant_type_id: int
 
 ### 4. Assumptions for Implementation Simplicity:
-- We don't need to keep track of POs <-> Plants relationship (we assume Plants are plants once they reach our Inventory)
+- We don't need to keep track of POs <-> Plants relationship (we assume Plant creation time is the only critical field once they reach our Inventory)
 - There is no User model and no access control. This is accessible only by admins.
 - We will seed the Vendors and PlantTypes rather than allowing creation.
 - 1(Vendor) to many (PA) relationship

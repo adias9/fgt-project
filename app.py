@@ -152,22 +152,21 @@ def create_purchase_order():
         )
     except Exception as err:
         return make_response(
-            jsonify({'message': f'error creating purchase_order, {err}'}), 
+            jsonify({'message': f'error creating purchase_order: {err}'}), 
             500
         )
 
-# update a user
-# @app.route('/users/<int:id>', methods=['PUT'])
-# def update_user(id):
-#     try:
-#         user = User.query.filter_by(id=id).first()
-#         if user:
-#             data = request.get_json()
-#             user.username = data['username']
-#             user.email = data['email']
-#             db.session.commit()
-#             return make_response(jsonify({'message': 'user updated'}), 200)
-#         return make_response(jsonify({'message': 'user not found'}), 404)
-#     except Exception:
-#         return make_response(jsonify({'message': 'error updating user'}), 500)
 
+# update a purchase_order
+@app.route('/purchase_order/<int:id>', methods=['PUT'])
+def update_purchase_order(id):
+    try:
+        purchase_order = PurchaseOrder.query.filter_by(id=id).first()
+        if purchase_order:
+            data = request.get_json()
+            purchase_order.is_received = data['received']
+            db.session.commit()
+            return make_response(jsonify({'message': 'purchase_order updated'}), 200)
+        return make_response(jsonify({'message': 'purchase_order not found'}), 404)
+    except Exception as err:
+        return make_response(jsonify({'message': f'error updating purchase_order: {err}'}), 500)

@@ -83,7 +83,7 @@ POST /purchase_order
 - return success
 
 PUT /purchase_order/<int:id>
-- params: N/A
+- params: { received: True }
 - logic: update purchase_order received & create new plants
 - return success
 
@@ -135,4 +135,6 @@ Plant
 - We will seed the Vendors and PlantTypes rather than allowing creation.
 - 1(Vendor) to many (PA) relationship
 - 1(Vendor) to many (PO) relationship
+- 1(PlantType) to many (PA) relationship
+- 1(PlantType) to many (PO) relationship
 - Won't add denormalized fields in implementation

@@ -1,5 +1,9 @@
 ## FGT Purchase Order/Agreement Project 
 
+### Running API Requests Via Postman
+
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/19653561-2ae87b1a-da6c-44b8-8b79-9f2ada1efb01?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D19653561-2ae87b1a-da6c-44b8-8b79-9f2ada1efb01%26entityType%3Dcollection%26workspaceId%3D748fe69a-f43a-4136-951a-9f1d1244ba40)
+
 ### Python/Flask with PostgreSQL database
 
 Project structure:
@@ -107,8 +111,6 @@ PurchaseAgreement
 - created_at: DateTime
 - plant_type_id: int
 - vendor_id: bigint
-- purchase_orders_quantity_total: int (Denormalized)
-- is_complete: boolean (Denormalized = Date.now() > end_date OR purchase_orders_quantity_total == total_quantity)
 
 PurchaseOrder
 - id: bigint
@@ -130,11 +132,13 @@ Plant
 - plant_type_id: int
 
 ### 3. Assumptions for Simplicity:
-- We don't need to keep track of the specific plants on POs (Plants are plants once they reach our Inventory)
+- We don't need to keep track of POs <-> Plants relationship (we assume Plants are plants once they reach our Inventory)
 - There is no User model and no access control. This is accessible only by admins.
 - We will seed the Vendors and PlantTypes rather than allowing creation.
 - 1(Vendor) to many (PA) relationship
 - 1(Vendor) to many (PO) relationship
 - 1(PlantType) to many (PA) relationship
 - 1(PlantType) to many (PO) relationship
-- Won't add denormalized fields in implementation
+- Won't add denormalized fields on PurchaseAgreement in implementation
+  - purchase_orders_quantity_total: int (Denormalized)
+  - is_complete: boolean (Denormalized = Date.now() > end_date OR purchase_orders_quantity_total == total_quantity)

@@ -39,7 +39,7 @@ class PurchaseAgreement(db.Model):
     )
     purchase_orders = db.relationship(
         'PurchaseOrder',
-        backref=db.backref('vendor', lazy='joined'),
+        backref=db.backref('purchase_agreement', lazy='joined'),
         lazy=False
     )
 

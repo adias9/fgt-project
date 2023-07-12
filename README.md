@@ -67,11 +67,11 @@ $ docker compose down
 
 POST /purchase_agreement
 - params: { total_quantity: int, end_date: date, vendor_id: uuid }
-- return purchase_agreement_id: uuid
+- return success
 
 POST /purchase_order
 - params: { quantity: int, plant_type_id: uuid, vendor_id: uuid }
-- return purchase_order_id: uuid
+- return success
 - errors:
   - if purchase order too big
 
@@ -79,6 +79,12 @@ PUT /purchase_order/<int:id>
 - params: { purchase_order_id: uuid }
 - logic: update purchase_order received & create new plants
 - return success
+
+(Seed endpoints)
+POST /vendor
+- params: { name: string }
+POST /plant_type
+- params: { name: string }
 
 ### 2. Data Model
 

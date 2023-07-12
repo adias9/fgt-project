@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 
 from os import environ
-from models import db, PurchaseAgreement, Vendor
+from models import db, PurchaseAgreement, Vendor, PlantType
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get('DB_URL')
@@ -14,6 +14,44 @@ with app.app_context():
 @app.route('/', methods=['GET'])
 def hello_world():
     return make_response(jsonify({'message': 'hello world'}), 200)
+
+
+# create vendor
+@app.route('/vendor', methods=['POST'])
+def create_vendor():
+    try:
+        data = request.get_json()
+        new_v = Vendor(name=data['name'])
+        db.session.add(new_v)
+        db.session.commit()
+        return make_response(
+            jsonify({'message': 'vendor created'}),
+            201
+        )
+    except Exception as err:
+        return make_response(
+            jsonify({'message': f'error creating vendor: {err}'}), 
+            500
+        )
+
+
+# create plant_type
+@app.route('/plant_type', methods=['POST'])
+def create_plant_type():
+    try:
+        data = request.get_json()
+        new_pt = PlantType(name=data['name'])
+        db.session.add(new_pt)
+        db.session.commit()
+        return make_response(
+            jsonify({'message': 'plant_type created'}),
+            201
+        )
+    except Exception as err:
+        return make_response(
+            jsonify({'message': f'error creating plant_type: {err}'}), 
+            500
+        )
 
 
 # create a purchase_agreement

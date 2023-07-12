@@ -67,7 +67,20 @@ $ docker compose down
 
 ## Project Planning
 
-### 1. Endpoints
+### 1. Given Requirements & Assumptions
+Requirements
+- Create a PA
+- Create a PO
+- Create a PO related to a PA
+- Receive a standard PO
+- Receive a PO that is related to a PA
+
+Assumptions
+- Plants always healthy 
+- We receive the sizes we ordered 
+- 1(PA) to many (PO) relationship
+
+### 2. Endpoints
 
 POST /purchase_agreement
 - params: { total_quantity: int, end_date: date, plant_type_id: uuid, vendor_id: uuid }
@@ -97,7 +110,7 @@ POST /vendor
 POST /plant_type
 - params: { name: string }
 
-### 2. Data Model
+### 3. Data Model
 
 Vendor
 - id: bigint
@@ -131,7 +144,7 @@ Plant
 - created_at: DateTime
 - plant_type_id: int
 
-### 3. Assumptions for Simplicity:
+### 4. Assumptions for Simplicity:
 - We don't need to keep track of POs <-> Plants relationship (we assume Plants are plants once they reach our Inventory)
 - There is no User model and no access control. This is accessible only by admins.
 - We will seed the Vendors and PlantTypes rather than allowing creation.

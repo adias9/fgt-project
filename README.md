@@ -1,6 +1,6 @@
 ## FGT Purchase Order/Agreement Project 
 
-### Running API Requests Via Postman
+### Testing: Run API Requests Via Postman
 
 [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/19653561-2ae87b1a-da6c-44b8-8b79-9f2ada1efb01?action=collection%2Ffork&source=rip_markdown&collection-url=entityId%3D19653561-2ae87b1a-da6c-44b8-8b79-9f2ada1efb01%26entityType%3Dcollection%26workspaceId%3D748fe69a-f43a-4136-951a-9f1d1244ba40)
 
@@ -144,7 +144,7 @@ Plant
 - created_at: DateTime
 - plant_type_id: int
 
-### 4. Assumptions for Simplicity:
+### 4. Assumptions for Implementation Simplicity:
 - We don't need to keep track of POs <-> Plants relationship (we assume Plants are plants once they reach our Inventory)
 - There is no User model and no access control. This is accessible only by admins.
 - We will seed the Vendors and PlantTypes rather than allowing creation.
